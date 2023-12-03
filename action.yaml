@@ -1,0 +1,11 @@
+name: Assemble and Tag
+description: Properly assembles and tags your Golang based GitHub Action
+runs:
+  using: node20
+  main: shim/invoke-binary.js
+branding:
+  icon: archive
+  color: blue
+inputs:
+  tag_name:
+    description: The tag to update. If the workflow event is `release`, it will use the `tag_name` from the event payload.
