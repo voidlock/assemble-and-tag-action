@@ -22,7 +22,6 @@ jobs:
         go:
           - '1.21'
     runs-on: '${{ matrix.os }}'
-    env:
     steps:
       - uses: 'actions/checkout@v4'
       - uses: 'actions/setup-go@v4'
