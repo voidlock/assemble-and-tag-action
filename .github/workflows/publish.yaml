@@ -9,33 +9,23 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build:
-    strategy:
-      fail-fast: false
-      matrix:
-        arch: 
-          - 'amd64'
-          - 'arm64'
-        os:
-          - 'ubuntu-latest'
-          - 'windows-latest'
-          - 'macos-latest'
-        go:
-          - '1.21'
-    runs-on: '${{ matrix.os }}'
+  call-test-and-build:
+    uses: ./.github/workflows/common.yaml
+  assemble-and-tag:
+    runs-on: 'ubuntu-latest'
+    needs: [ call-test-and-build ]
     steps:
-      - uses: 'actions/checkout@v4'
-      - uses: 'actions/setup-go@v4'
+      - name: Checkout the Repo
+        uses: actions/checkout@v3
+
+      - name: Download artifacts
+        id: download
+        uses: actions/download-artifact@v3
         with:
-          go-version: '${{ matrix.go }}'
-      - name: "go test"
-        run: |
-          go test -count=1 -race -timeout=10m ./...
-      - name: 'go build'
-        env:
-          CGO_ENABLED: 0
-        run: |
-          go build -ldflags="-s -w" -o $ARTIFACT_NAME ./cmd/${{ matrix.action }}/...
-      - uses: ./
+          name: artifacts
+          path: .
+
+      - name: Assemble and Tag
+        uses: ./
         env:
           GITHUB_TOKEN: ${{ github.token }}
