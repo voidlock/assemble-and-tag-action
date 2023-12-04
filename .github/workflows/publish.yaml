@@ -25,6 +25,7 @@ jobs:
           name: artifacts
           path: .
 
+      - run: ls -R
       - name: Assemble and Tag
         uses: ./
         env:
