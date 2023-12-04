@@ -10,13 +10,8 @@ jobs:
       matrix:
         os:
           - 'ubuntu-latest'
-          # - 'windows-latest'
-          # - 'macos-latest'
         go:
           - '1.21'
-        # include:
-        #   - os: 'windows-latest'
-        #     ext: '.exe'
     runs-on: '${{ matrix.os }}'
     steps:
       - uses: 'actions/checkout@v4'
@@ -32,7 +27,12 @@ jobs:
         env:
           CGO_ENABLED: 0
         run: |
-          go build -ldflags="-s -w" -o bin/assemble-$(go env GOOS)-$(go env GOARCH)${{ matrix.ext }} ./cmd/...
+          for os in darwin linux windows; do
+            for arch in amd64 arm64; do
+              env GOOS="${os}" GOARCH="${arch}" EXT=$([ "${os}" == "windows" ] && echo ".exe") \
+                bash -c 'go build -ldflags="-s -w" -o bin/assemble-${GOOS}-${GOARCH}${EXT} ./cmd/...'
+            done
+          done
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
