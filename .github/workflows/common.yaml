@@ -14,9 +14,9 @@ jobs:
           # - 'macos-latest'
         go:
           - '1.21'
-        include:
-          - os: 'windows-latest'
-            ext: '.exe'
+        # include:
+        #   - os: 'windows-latest'
+        #     ext: '.exe'
     runs-on: '${{ matrix.os }}'
     steps:
       - uses: 'actions/checkout@v4'
