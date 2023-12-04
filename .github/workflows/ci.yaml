@@ -22,6 +22,7 @@ jobs:
         go:
           - '1.21'
     runs-on: '${{ matrix.os }}'
+    env:
     steps:
       - uses: 'actions/checkout@v4'
       - uses: 'actions/setup-go@v4'
@@ -34,4 +35,11 @@ jobs:
         env:
           CGO_ENABLED: 0
         run: |
-          go build -ldflags="-s -w" -o $ARTIFACT_NAME ./cmd/${{ matrix.action }}/...
+          go build -ldflags="-s -w" -o assemble-$(go env GOOS)-$(go env GOARCH)  }} ./cmd/...
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: artifacts
+          path: assemble-*
+
