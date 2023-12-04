@@ -26,6 +26,7 @@ jobs:
           path: bin/
 
       - run: ls -R
+      - run: chmod +x bin/*
       - name: Assemble and Tag
         uses: ./
         env:
