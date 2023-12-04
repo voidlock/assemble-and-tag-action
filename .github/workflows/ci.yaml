@@ -27,14 +27,16 @@ jobs:
       - uses: 'actions/setup-go@v4'
         with:
           go-version: '${{ matrix.go }}'
-      - name: "go test"
+
+      - name: 'Run tests'
         run: |
           go test -count=1 -race -timeout=10m ./...
-      - name: 'go build'
+
+      - name: 'Build artifacts'
         env:
           CGO_ENABLED: 0
         run: |
-          go build -ldflags="-s -w" -o assemble-$(go env GOOS)-$(go env GOARCH)  }} ./cmd/...
+          go build -ldflags="-s -w" -o assemble-$(go env GOOS)-$(go env GOARCH) ./cmd/...
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
