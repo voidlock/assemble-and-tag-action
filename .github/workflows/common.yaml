@@ -32,11 +32,11 @@ jobs:
         env:
           CGO_ENABLED: 0
         run: |
-          go build -ldflags="-s -w" -o assemble-$(go env GOOS)-$(go env GOARCH)${{ matrix.ext }} ./cmd/...
+          go build -ldflags="-s -w" -o bin/assemble-$(go env GOOS)-$(go env GOARCH)${{ matrix.ext }} ./cmd/...
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
           name: artifacts
-          path: assemble-*
+          path: bin/*
 

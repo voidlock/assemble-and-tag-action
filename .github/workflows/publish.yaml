@@ -23,7 +23,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: artifacts
-          path: .
+          path: bin/
 
       - run: ls -R
       - name: Assemble and Tag
