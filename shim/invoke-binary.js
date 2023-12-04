@@ -33,8 +33,11 @@ function chooseBinary() {
 function main() {
     const binary = chooseBinary()
     const mainScript = `${__dirname}/../bin/${binary}`
+
+    console.log("Spawning %s", mainScript)
     const spawnSyncReturns = childProcess.spawnSync(mainScript, { stdio: 'inherit' })
     const status = spawnSyncReturns.status
+    console.log("Captured status %s", status)
     if (typeof status === 'number') {
         process.exit(status)
     }
