@@ -39,7 +39,7 @@ func WithAction(action *githubactions.Action) Option {
 			if err != nil {
 				return err
 			}
-			releaseEvent := event.(github.ReleaseEvent)
+			releaseEvent := event.(*github.ReleaseEvent)
 			release := releaseEvent.GetRelease()
 
 			cmd.rel = release
