@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/sethvargo/go-githubactions"
+
 	"github.com/voidlock/assemble-and-tag/pkg/assemble"
 )
 
@@ -11,7 +12,7 @@ func main() {
 	ctx := context.Background()
 	action := githubactions.New()
 
-	cmd, err := assemble.NewFromInputs(action)
+	cmd, err := assemble.NewFromContext(action)
 	if err != nil {
 		githubactions.Fatalf("%v", err)
 	}
