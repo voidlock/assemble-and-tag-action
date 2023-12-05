@@ -38,12 +38,14 @@ func TestNewFromInputs(t *testing.T) {
 			expTag: "input_tag",
 			env: map[string]string{
 				"INPUT_TAG_NAME": "input_tag",
+				"GITHUB_TOKEN":   "fake",
 			},
 		},
 		{
 			name:   "from payload",
 			expTag: "release_tag",
 			env: map[string]string{
+				"GITHUB_TOKEN":      "fake",
 				"GITHUB_EVENT_NAME": "release",
 				"GITHUB_EVENT_PATH": eventPayloadPath,
 			},
@@ -65,7 +67,7 @@ func TestNewFromInputs(t *testing.T) {
 				githubactions.WithGetenv(getenv),
 			)
 
-			cmd, err := NewFromInputs(action)
+			cmd, err := NewFromContext(action)
 			if err != nil {
 				t.Fatalf("faild with error %q", err)
 			}
