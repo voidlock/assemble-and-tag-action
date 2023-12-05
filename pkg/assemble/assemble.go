@@ -124,15 +124,16 @@ func createEntries(action *githubactions.Action) ([]*github.TreeEntry, error) {
 		return entries, err
 	}
 
-	files, err := os.ReadDir(filepath.Join(cwd, "bin"))
+	binDir := filepath.Join(cwd, "bin")
+	files, err := os.ReadDir(binDir)
 	if err != nil {
 		return entries, err
 	}
 
 	for _, file := range files {
-		path := file.Name()
-		entry, err := createEntry(path)
-		if err != nil {
+		path := filepath.Join(binDir, file.Name())
+		entry, rerr := createEntry(path)
+		if rerr != nil {
 			return entries, err
 		}
 
