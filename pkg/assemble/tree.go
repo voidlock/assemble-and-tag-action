@@ -10,7 +10,9 @@ import (
 )
 
 const (
-	EntryType = "blob"
+	EntryFileMode       = "100644"
+	EntryExecutableMode = "100755"
+	EntryType           = "blob"
 )
 
 type TreeBuilder interface {
@@ -54,7 +56,7 @@ func createEntries(action *githubactions.Action) ([]*github.TreeEntry, error) {
 
 	for _, file := range files {
 		path := filepath.Join(binDir, file.Name())
-		entry, rerr := createEntry(path)
+		entry, rerr := createEntry(path, EntryExecutableMode)
 		if rerr != nil {
 			return entries, err
 		}
@@ -63,14 +65,14 @@ func createEntries(action *githubactions.Action) ([]*github.TreeEntry, error) {
 		entries = append(entries, entry)
 	}
 
-	yaml, err := createEntry("action.yaml")
+	yaml, err := createEntry("action.yaml", EntryFileMode)
 	if err != nil {
 		return entries, err
 	}
 	action.Debugf("appending %q to bare tree", *yaml.Path)
 	entries = append(entries, yaml)
 
-	shim, err := createEntry(filepath.Join("shim", "invoke-binary.js"))
+	shim, err := createEntry(filepath.Join("shim", "invoke-binary.js"), EntryFileMode)
 	if err != nil {
 		return entries, err
 	}
@@ -80,12 +82,7 @@ func createEntries(action *githubactions.Action) ([]*github.TreeEntry, error) {
 	return entries, nil
 }
 
-func createEntry(path string) (*github.TreeEntry, error) {
-	info, err := os.Stat(path)
-	if err != nil {
-		return nil, err
-	}
-
+func createEntry(path, mode string) (*github.TreeEntry, error) {
 	content, err := readFile(path)
 	if err != nil {
 		return nil, err
@@ -93,7 +90,7 @@ func createEntry(path string) (*github.TreeEntry, error) {
 
 	return &github.TreeEntry{
 		Path:    github.String(path),
-		Mode:    github.String(info.Mode().String()),
+		Mode:    github.String(mode),
 		Type:    github.String(EntryType),
 		Content: github.String(content),
 	}, nil
