@@ -29,8 +29,8 @@ func (m mediator) CreateOrUpdateTag(ctx context.Context, tagName string, commit 
 		// attach the new commit sha to the existing reference
 		ref.Object.SHA = commit.SHA
 
-		newRef, _, err := m.gh.Git.UpdateRef(ctx, owner, repo, ref, true)
-		return newRef, err
+		newRef, _, uerr := m.gh.Git.UpdateRef(ctx, owner, repo, ref, true)
+		return newRef, uerr
 	}
 
 	// create a new ref for the tag
