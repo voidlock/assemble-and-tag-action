@@ -46,33 +46,42 @@ func (cmd *assembler) Run(ctx context.Context) error {
 	if err != nil {
 		return err
 	}
-	cmd.action.Debugf("Created new commit %q", commit)
+	cmd.action.Infof("Created new commit %q", commit.GetSHA())
 
 	tagger := NewTagger(cmd.gh, cmd.gtx)
-	_, err = tagger.CreateOrUpdateTag(ctx, cmd.tagName, commit)
+	tag, err := tagger.CreateOrUpdateTag(ctx, cmd.tagName, commit)
 	if err != nil {
 		return err
 	}
+	cmd.action.Infof("Updating %q to match commit %q", tag.GetRef(), commit.GetSHA())
 
 	// if we aren't dealing with a release event return
 	if cmd.rel == nil {
+		cmd.action.Infof("Workflow not triggered by a `release` event, returning.")
 		return nil
 	}
 
 	// if we have a draft or pre-release release return
 	if *cmd.rel.Draft || *cmd.rel.Prerelease {
+		cmd.action.Infof("Workflow triggered by a 'draft' or 'pre-release' event, returning.")
 		return nil
 	}
 
 	major := semver.Major(cmd.tagName)
 	majorMinor := semver.MajorMinor(cmd.tagName)
-	if _, err = tagger.CreateOrUpdateTag(ctx, major, commit); err != nil {
+	tag, err = tagger.CreateOrUpdateTag(ctx, major, commit)
+	if err != nil {
 		return err
 	}
-	if _, err = tagger.CreateOrUpdateTag(ctx, majorMinor, commit); err != nil {
-		return err
-	}
+	cmd.action.Infof("Updating %q to match commit %q", tag.GetRef(), commit.GetSHA())
 
+	tag, err = tagger.CreateOrUpdateTag(ctx, majorMinor, commit)
+	if err != nil {
+		return err
+	}
+	cmd.action.Infof("Updating %q to match commit %q", tag.GetRef(), commit.GetSHA())
+
+	cmd.action.Infof("Completed")
 	return nil
 }
 
