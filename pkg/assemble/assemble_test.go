@@ -37,8 +37,10 @@ func TestNewFromInputs(t *testing.T) {
 			name:   "from action input",
 			expTag: "input_tag",
 			env: map[string]string{
-				"INPUT_TAG_NAME": "input_tag",
-				"GITHUB_TOKEN":   "fake",
+				"INPUT_TAG_NAME":    "input_tag",
+				"GITHUB_EVENT_NAME": "release",
+				"GITHUB_EVENT_PATH": eventPayloadPath,
+				"GITHUB_TOKEN":      "fake",
 			},
 		},
 		{
