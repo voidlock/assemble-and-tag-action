@@ -128,12 +128,7 @@ func (a *assembler) updateTag(ctx context.Context, commit *github.Commit) (*gith
 func createEntries(action *githubactions.Action) ([]*github.TreeEntry, error) {
 	entries := []*github.TreeEntry{}
 
-	cwd, err := os.Getwd()
-	if err != nil {
-		return entries, err
-	}
-
-	binDir := filepath.Join(cwd, "bin")
+	binDir := filepath.Join("bin")
 	files, err := os.ReadDir(binDir)
 	if err != nil {
 		return entries, err
@@ -150,14 +145,14 @@ func createEntries(action *githubactions.Action) ([]*github.TreeEntry, error) {
 		entries = append(entries, entry)
 	}
 
-	yaml, err := createEntry(filepath.Join(cwd, "action.yaml"))
+	yaml, err := createEntry("action.yaml")
 	if err != nil {
 		return entries, err
 	}
 	action.Debugf("appending %q to bare tree", *yaml.Path)
 	entries = append(entries, yaml)
 
-	shim, err := createEntry(filepath.Join(cwd, "shim", "invoke-binary.js"))
+	shim, err := createEntry(filepath.Join("shim", "invoke-binary.js"))
 	if err != nil {
 		return entries, err
 	}
