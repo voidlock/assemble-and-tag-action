@@ -40,7 +40,7 @@ func (cmd *assembler) Run(ctx context.Context) error {
 	}
 
 	// if we have a draft or pre-release release return
-	if *cmd.rel.Draft || *cmd.rel.Prerelease {
+	if cmd.rel.GetDraft() || cmd.rel.GetPrerelease() {
 		cmd.action.Infof("Workflow triggered by a 'draft' or 'pre-release' event, returning.")
 		return nil
 	}
